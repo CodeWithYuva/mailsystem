@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Email Input UI</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+        background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+    }
+    .glass {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    .input-neumorphism {
+        border-radius: 12px;
+        background: #e0e0e0;
+        box-shadow: inset 5px 5px 10px #babecc, inset -5px -5px 10px #ffffff;
+        padding: 12px;
+        transition: all 0.3s ease;
+    }
+    .input-neumorphism:focus {
+        box-shadow: inset 2px 2px 5px #babecc, inset -2px -2px 5px #ffffff;
+    }
+    .logo {
+        width: 50px;
+        height: 50px;
+        background: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+        font-size: 24px;
+        font-weight: bold;
+        color: #1a2a6c;
+        margin: 0 auto 10px;
+    }
+  </style>
+</head>
+<body class="flex items-center justify-center h-screen">
+<div class="glass p-8 w-96 text-center">
+  <div class="logo">🖤</div>
+  <h2 class="text-3xl font-extrabold text-white mb-4">Stay Updated!</h2>
+  <p class="text-black-500 mb-4">Subscribe to cubex for continous learning .</p>
+  <input id="email" type="email" placeholder="Enter your email"
+         class="input-neumorphism w-full text-gray-700 focus:outline-none" />
+  <button onclick="submitEmail()"
+          class="mt-4 w-full bg-gradient-to-r from-blue-400 to-blue-600 text-white py-3 rounded-lg shadow-lg hover:opacity-90 transition duration-300">
+    Submit
+  </button>
+  <p id="message" class="mt-3 text-white"></p>
+</div>
+
+<script>
+  async function submitEmail() {
+      const email = document.getElementById("email").value;
+      const message = document.getElementById("message");
+
+      if (!email.includes("@")) {
+          message.textContent = "Invalid email address.";
+          message.classList.add("text-red-500");
+          return;
+      }
+
+      const response = await fetch("http://localhost:8080/sendmail", {
+          method: "POST",
+        headers: { "Content-Type": "application/json" },
+             body: JSON.stringify({ recipient: email })
+      });
+
+      if (response.ok) {
+          message.textContent = "Email submitted successfully!";
+          message.classList.add("text-green-400");
+      } else {
+          message.textContent = "Error submitting email.";
+          message.classList.add("text-red-500");
+      }
+  }
+</script>
+</body>
+</html>
